@@ -7,7 +7,7 @@ This is the repo for my Bed&Breakfast bookings project.
     - Uses the [chi router](https://github.com/go-chi/chi)
     - Uses alex edwards [SCS session manager](gttps://github.com/alexedwards/scs/v2)
     - Uses [nosurf](https://github.com/justinas/nosurf)
-- 3d party packages:
+- 3rd party packages:
     - Bootstrap
     - VanillaJS Datepicker
     - Notie
