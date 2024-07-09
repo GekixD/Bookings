@@ -50,3 +50,23 @@ func (r *Repository) About(res http.ResponseWriter, req *http.Request) {
 
 	render.RenderTemplate(res, "about.page.tmpl", tmplData)
 }
+
+// Reservation renders the make a reservation page and displays form
+func (r *Repository) Reservation(res http.ResponseWriter, req *http.Request) {
+	render.RenderTemplate(res, "make-reservation.page.tmpl", &models.TemplateData{})
+}
+
+// Generals renders the General's room page
+func (r *Repository) Generals(res http.ResponseWriter, req *http.Request) {
+	render.RenderTemplate(res, "generals.page.tmpl", &models.TemplateData{})
+}
+
+// Majors renders the Majors's room page
+func (r *Repository) Majors(res http.ResponseWriter, req *http.Request) {
+	render.RenderTemplate(res, "generals.page.tmpl", &models.TemplateData{})
+}
+
+// Availability renders the Majors's room page
+func (r *Repository) Availability(res http.ResponseWriter, req *http.Request) {
+	render.RenderTemplate(res, "search-availability.page.tmpl", &models.TemplateData{})
+}
