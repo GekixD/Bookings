@@ -10,3 +10,7 @@
 .datepicker {
     z-index: 1;
 }
+
+.room-image{
+    max-width: 50%;
+}
