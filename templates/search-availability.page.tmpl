@@ -28,3 +28,13 @@
             </div>
         </div>
 {{end}}
+
+{{define "js"}}
+<script>
+    // Date range picker
+    const elem = document.getElementById('reservation-dates');
+    const rangePicker = new DateRangePicker(elem, {
+        format: "dd/mm/yyyy"
+    });
+</script>
+{{end}}
