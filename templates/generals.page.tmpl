@@ -47,7 +47,18 @@
                     </div>
                 </form>
             `;
-            attention.date({msg: html, title: "When should we expect you?"})
+
+            attention.date({
+                msg: html, 
+                title: "When should we expect you?",
+                callback: (result) => {
+                    fetch('/search-availability-json')
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data);
+                        })
+                } 
+            })
         });
     </script>
 {{end}}

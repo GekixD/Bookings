@@ -10,6 +10,7 @@ import (
 
 	"github.com/GekixD/Bookings/pkg/config"
 	"github.com/GekixD/Bookings/pkg/models"
+	"github.com/justinas/nosurf"
 )
 
 // METHOD 3 - AUTOMATIC CACHE
@@ -21,11 +22,12 @@ func NewTemplates(a *config.AppConfig) {
 	app = a
 }
 
-func AddDefaultData(tmplData *models.TemplateData) *models.TemplateData {
+func AddDefaultData(tmplData *models.TemplateData, req *http.Request) *models.TemplateData {
+	tmplData.CSRFToken = nosurf.Token(req) // CSRF token insterted into template data
 	return tmplData
 }
 
-func RenderTemplate(res http.ResponseWriter, tmpl string, tmplData *models.TemplateData) {
+func RenderTemplate(res http.ResponseWriter, req *http.Request, tmpl string, tmplData *models.TemplateData) {
 
 	var templCache map[string]*template.Template
 
@@ -45,7 +47,7 @@ func RenderTemplate(res http.ResponseWriter, tmpl string, tmplData *models.Templ
 	// we can create a buffer for a finer grain error checking (will be touched on later)
 	buffer := new(bytes.Buffer)
 
-	tmplData = AddDefaultData(tmplData)
+	tmplData = AddDefaultData(tmplData, req)
 
 	err := t.Execute(buffer, tmplData)
 	if err != nil {
