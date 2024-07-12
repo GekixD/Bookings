@@ -64,6 +64,32 @@ func (r *Repository) Reservation(res http.ResponseWriter, req *http.Request) {
 
 // PostReservation handles the posting of a reservation form
 func (r *Repository) PostReservation(res http.ResponseWriter, req *http.Request) {
+	err := req.ParseForm()
+	if err != nil {
+		log.Println("Error parsing the Form data: ", err)
+		return
+	}
+
+	reservation := models.Reservation{
+		FirstName: req.Form.Get("first_name"),
+		LastName:  req.Form.Get("last_Name"),
+		Email:     req.Form.Get("email"),
+		Phone:     req.Form.Get("phone"),
+	}
+
+	form := forms.New(req.PostForm)
+	form.Has("first_name", req)
+	// If you find any validation errors
+	if !form.Valid() {
+		data := make(map[string]interface{})
+		data["reservation"] = reservation
+		// render the make reservation page with the form and data provided but don't continue (return)
+		render.RenderTemplate(res, req, "make-reservations.page.tmpl", &models.TemplateData{
+			Form: form,
+			Data: data,
+		})
+		return
+	}
 }
 
 // Generals renders the General's room page

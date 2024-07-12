@@ -23,7 +23,13 @@ func New(data url.Values) *Form {
 func (f *Form) Has(field string, req *http.Request) bool {
 	contents := req.Form.Get(field)
 	if contents == "" {
+		f.Errors.Add(field, "This field can not be empty!")
 		return false
 	}
 	return true
+}
+
+// Valid returns true if there are no errors, otherwise false
+func (f *Form) Valid() bool {
+	return len(f.Errors) == 0
 }
