@@ -6,9 +6,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/GekixD/Bookings/pkg/config"
-	"github.com/GekixD/Bookings/pkg/models"
-	"github.com/GekixD/Bookings/pkg/render"
+	"github.com/GekixD/Bookings/internal/config"
+	"github.com/GekixD/Bookings/internal/models"
+	"github.com/GekixD/Bookings/internal/render"
 )
 
 // Repository type initialization
