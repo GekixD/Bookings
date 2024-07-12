@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/GekixD/Bookings/internal/config"
+	"github.com/GekixD/Bookings/internal/forms"
 	"github.com/GekixD/Bookings/internal/models"
 	"github.com/GekixD/Bookings/internal/render"
 )
@@ -56,7 +57,9 @@ func (r *Repository) About(res http.ResponseWriter, req *http.Request) {
 
 // Reservation renders the make a reservation page and displays form
 func (r *Repository) Reservation(res http.ResponseWriter, req *http.Request) {
-	render.RenderTemplate(res, req, "make-reservations.page.tmpl", &models.TemplateData{})
+	render.RenderTemplate(res, req, "make-reservations.page.tmpl", &models.TemplateData{
+		Form: forms.New(nil),
+	})
 }
 
 // PostReservation handles the posting of a reservation form
