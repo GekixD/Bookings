@@ -18,14 +18,14 @@ type Repository struct {
 
 var Repo *Repository
 
-// This creates a new repository
+// NewRepo creates a new repository
 func NewRepo(a *config.AppConfig) *Repository {
 	return &Repository{
 		App: a,
 	}
 }
 
-// This sets the repository for the handlers
+// NewHandlers sets the repository for the handlers
 func NewHandlers(r *Repository) {
 	Repo = r
 }
@@ -57,6 +57,10 @@ func (r *Repository) About(res http.ResponseWriter, req *http.Request) {
 // Reservation renders the make a reservation page and displays form
 func (r *Repository) Reservation(res http.ResponseWriter, req *http.Request) {
 	render.RenderTemplate(res, req, "make-reservations.page.tmpl", &models.TemplateData{})
+}
+
+// PostReservation handles the posting of a reservation form
+func (r *Repository) PostReservation(res http.ResponseWriter, req *http.Request) {
 }
 
 // Generals renders the General's room page

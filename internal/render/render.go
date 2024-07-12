@@ -17,16 +17,18 @@ import (
 
 var app *config.AppConfig
 
-// sets the config for the template package
+// NewTemplates sets the config for the template package
 func NewTemplates(a *config.AppConfig) {
 	app = a
 }
 
+// AddDefaultData adds the default data packed in a models.TemplateData (eg CSRF token)
 func AddDefaultData(tmplData *models.TemplateData, req *http.Request) *models.TemplateData {
 	tmplData.CSRFToken = nosurf.Token(req) // CSRF token insterted into template data
 	return tmplData
 }
 
+// RenderTemplate handles the client-side rendering of a page handler
 func RenderTemplate(res http.ResponseWriter, req *http.Request, tmpl string, tmplData *models.TemplateData) {
 
 	var templCache map[string]*template.Template
@@ -61,7 +63,7 @@ func RenderTemplate(res http.ResponseWriter, req *http.Request, tmpl string, tmp
 	}
 }
 
-// This creates the template cache for all templates, without the need to call it everytime
+// CreateTemplateCache creates the template cache for all templates, without the need to call it everytime
 func CreateTemplateCache() (map[string]*template.Template, error) {
 	myCache := map[string]*template.Template{}
 
