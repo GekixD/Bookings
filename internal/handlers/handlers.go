@@ -57,6 +57,9 @@ func (r *Repository) About(res http.ResponseWriter, req *http.Request) {
 
 // Reservation renders the make a reservation page and displays form
 func (r *Repository) Reservation(res http.ResponseWriter, req *http.Request) {
+	var emptyReservation models.Reservation
+	data := make(map[string]interface{})
+	data["reservation"] = emptyReservation
 	render.RenderTemplate(res, req, "make-reservations.page.tmpl", &models.TemplateData{
 		Form: forms.New(nil),
 	})
@@ -72,13 +75,18 @@ func (r *Repository) PostReservation(res http.ResponseWriter, req *http.Request)
 
 	reservation := models.Reservation{
 		FirstName: req.Form.Get("first_name"),
-		LastName:  req.Form.Get("last_Name"),
+		LastName:  req.Form.Get("last_name"),
 		Email:     req.Form.Get("email"),
 		Phone:     req.Form.Get("phone"),
 	}
 
 	form := forms.New(req.PostForm)
-	form.Has("first_name", req)
+	// Form validation logic, the order the messages will be displayed is the order the errors appears (due to the forms.Get function)
+	form.Required("first_name", "last_name", "email", "phone")
+	form.MinLength("first_name", 3, req) // The first name needs to be at least 3 characters long
+	form.MinLength("last_name", 3, req)  // The last name needs to be at least 3 characters long
+	form.MinLength("last_name", 10, req) // The phone number needs to be at least 3 characters long
+	form.IsEmail("email")
 	// If you find any validation errors
 	if !form.Valid() {
 		data := make(map[string]interface{})
