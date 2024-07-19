@@ -98,6 +98,9 @@ func (r *Repository) PostReservation(res http.ResponseWriter, req *http.Request)
 		})
 		return
 	}
+
+	r.App.Session.Put(req.Context(), "reservation", reservation)         // Redirect to reservation summary with all the required data
+	http.Redirect(res, req, "/reservation-summary", http.StatusSeeOther) // redirect after submitting the form to the reservation summary page
 }
 
 // Generals renders the General's room page
@@ -148,4 +151,8 @@ func (r *Repository) AvailabilityJSON(res http.ResponseWriter, req *http.Request
 	// standard Content-Type Header is "text/html" so we need to define it to be JSON
 	res.Header().Set("Content-Type", "application/json")
 	res.Write(out)
+}
+
+func (r *Repository) ReservationSummary(res http.ResponseWriter, req *http.Request) {
+	render.RenderTemplate(res, req, "reservation-summary.page.tmpl", &models.TemplateData{})
 }
