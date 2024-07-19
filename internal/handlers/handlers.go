@@ -85,7 +85,7 @@ func (r *Repository) PostReservation(res http.ResponseWriter, req *http.Request)
 	form.Required("first_name", "last_name", "email", "phone")
 	form.MinLength("first_name", 3, req) // The first name needs to be at least 3 characters long
 	form.MinLength("last_name", 3, req)  // The last name needs to be at least 3 characters long
-	form.MinLength("last_name", 10, req) // The phone number needs to be at least 3 characters long
+	form.MinLength("phone", 10, req)     // The phone number needs to be at least 3 characters long
 	form.IsEmail("email")
 	// If you find any validation errors
 	if !form.Valid() {
@@ -153,6 +153,23 @@ func (r *Repository) AvailabilityJSON(res http.ResponseWriter, req *http.Request
 	res.Write(out)
 }
 
+// ReservationSummary renders the page that displays the reservation's details to the user
 func (r *Repository) ReservationSummary(res http.ResponseWriter, req *http.Request) {
-	render.RenderTemplate(res, req, "reservation-summary.page.tmpl", &models.TemplateData{})
+	reservation, ok := r.App.Session.Get(req.Context(), "reservation").(models.Reservation)
+	if !ok {
+		// In case the user tried to access this page without submitting a form
+		log.Println("Can not get item from session")
+		r.App.Session.Put(req.Context(), "error", "Can't get reservation from current session")
+		http.Redirect(res, req, "/", http.StatusTemporaryRedirect)
+		return
+	}
+
+	// remove reservation data from the session after the post is complete
+	r.App.Session.Remove(req.Context(), "reservation")
+	data := make(map[string]interface{})
+	data["reservation"] = reservation
+
+	render.RenderTemplate(res, req, "reservation-summary.page.tmpl", &models.TemplateData{
+		Data: data,
+	})
 }

@@ -24,7 +24,10 @@ func NewTemplates(a *config.AppConfig) {
 
 // AddDefaultData adds the default data packed in a models.TemplateData (eg CSRF token)
 func AddDefaultData(tmplData *models.TemplateData, req *http.Request) *models.TemplateData {
-	tmplData.CSRFToken = nosurf.Token(req) // CSRF token insterted into template data
+	tmplData.FlashMsg = app.Session.PopString(req.Context(), "flash")  // Puts something in the session until the next time a
+	tmplData.Warning = app.Session.PopString(req.Context(), "warning") // until the next time a page is displayed
+	tmplData.Error = app.Session.PopString(req.Context(), "error")     // and then it's automatically taken out
+	tmplData.CSRFToken = nosurf.Token(req)                             // CSRF token insterted into template data
 	return tmplData
 }
 

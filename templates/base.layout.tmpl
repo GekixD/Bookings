@@ -218,6 +218,19 @@
                 })
             };
 
+            // These "with" templates are not wrong, the linter displays them so incorrectly
+            {{with .Error}}
+            notify("{{.}}", "error")
+            {{end}}
+
+            {{with .FlashMsg}}
+            notify("{{.}}", "success")
+            {{end}}
+
+            {{with .Warning}}
+            notify("{{.}}", "warning")
+            {{end}}
+
         </script>
 
 
