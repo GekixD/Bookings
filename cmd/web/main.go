@@ -21,6 +21,25 @@ var app config.AppConfig
 var session *scs.SessionManager
 
 func main() {
+
+	err := run()
+	if err != nil {
+		log.Fatal("Fatal error starting the web application: ", err)
+	}
+
+	srv := &http.Server{
+		Addr:    PORT,
+		Handler: routes(&app),
+	}
+
+	fmt.Println("Starting web application on port: ", PORT)
+
+	err = srv.ListenAndServe()
+	log.Fatal("Fatal Server Error: ", err)
+}
+
+// run allows all app related logic to be outside the mail function
+func run() error {
 	// What we want our session to contain:
 	gob.Register(models.Reservation{}) //What do I want to store in the session
 	app.Prod = false                   // whether the web app is in producton or development
@@ -35,7 +54,8 @@ func main() {
 
 	tmplCache, err := render.CreateTemplateCache()
 	if err != nil {
-		log.Fatal("can not create template cache, due to error: ", err)
+		log.Fatal("Can not create template cache.")
+		return err
 	}
 	app.TemplateCache = tmplCache
 	app.UseCache = false
@@ -46,13 +66,5 @@ func main() {
 
 	render.NewTemplates(&app)
 
-	srv := &http.Server{
-		Addr:    PORT,
-		Handler: routes(&app),
-	}
-
-	fmt.Println("Starting web application on port: ", PORT)
-
-	err = srv.ListenAndServe()
-	log.Fatal("Fatal Server Error: ", err)
+	return nil
 }
