@@ -20,13 +20,14 @@ var tests = []struct {
 	params         []postData // hte parameters for the test
 	expectedStatus int        // the expected status code for the test (2xx, 3xx, ...)
 }{
-	{"home", "/", "GET", []postData{}, http.StatusOK},                            // Get request to home page
-	{"about", "/about", "GET", []postData{}, http.StatusOK},                      // Get request to about page
-	{"generals", "/generals", "GET", []postData{}, http.StatusOK},                // Get request to general's page
-	{"majors", "/majors", "GET", []postData{}, http.StatusOK},                    // Get request to major's page
-	{"search-avail", "/search-availability", "GET", []postData{}, http.StatusOK}, // Get request to search availability page
-	{"contact", "/contact", "GET", []postData{}, http.StatusOK},                  // Get request to contact page
-	{"make-res", "/make-reservation", "GET", []postData{}, http.StatusOK},        // Get request to search availability page
+	{"home", "/", "GET", []postData{}, http.StatusOK},                                 // Get request to home page
+	{"about", "/about", "GET", []postData{}, http.StatusOK},                           // Get request to about page
+	{"generals", "/generals", "GET", []postData{}, http.StatusOK},                     // Get request to general's page
+	{"majors", "/majors", "GET", []postData{}, http.StatusOK},                         // Get request to major's page
+	{"search-avail", "/search-availability", "GET", []postData{}, http.StatusOK},      // Get request to search availability page
+	{"contact", "/contact", "GET", []postData{}, http.StatusOK},                       // Get request to contact page
+	{"make-res", "/make-reservation", "GET", []postData{}, http.StatusOK},             // Get request to search availability page
+	{"res-summary-noRes", "/reservation-summary", "GET", []postData{}, http.StatusOK}, // Get request to search availability page
 	{"post-search-avail", "/search-availability", "POST", []postData{
 		{key: "start", value: "2024-01-01"},
 		{key: "end", value: "2024-01-02"},
