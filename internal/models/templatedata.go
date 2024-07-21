@@ -1,6 +1,8 @@
 package models
 
-import "github.com/GekixD/Bookings/internal/forms"
+import (
+	"github.com/GekixD/Bookings/internal/forms"
+)
 
 // TemplateData holds data sent from handlers to templates
 type TemplateData struct {

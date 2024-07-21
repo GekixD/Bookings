@@ -16,6 +16,8 @@ import (
 // METHOD 3 - AUTOMATIC CACHE
 
 var app *config.AppConfig
+var tmplPath = "./tempates"        // the path to the template files
+var functions = template.FuncMap{} // a map of functions that will render with the templates
 
 // NewTemplates sets the config for the template package
 func NewTemplates(a *config.AppConfig) {
@@ -71,26 +73,26 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 	myCache := map[string]*template.Template{}
 
 	// get all *.page.tmpl from ./templates
-	pages, err := filepath.Glob("./templates/*.page.tmpl")
+	pages, err := filepath.Glob(fmt.Sprintf("%s/*.page.tmpl", tmplPath))
 	if err != nil {
 		return myCache, err
 	}
 
 	for _, page := range pages {
 		name := filepath.Base(page)
-		tmplSet, err := template.New(name).ParseFiles(page)
+		tmplSet, err := template.New(name).Funcs(functions).ParseFiles(page)
 		if err != nil {
 			return myCache, err
 		}
 
 		// check if there are any .layout.tmpl files
-		matches, err := filepath.Glob("./templates/*.layout.tmpl")
+		matches, err := filepath.Glob(fmt.Sprintf("%s/*.layout.tmpl", tmplPath))
 		if err != nil {
 			return myCache, err
 		}
 
 		if len(matches) > 0 {
-			tmplSet, err = tmplSet.ParseGlob("./templates/*.layout.tmpl")
+			tmplSet, err = tmplSet.ParseGlob(fmt.Sprintf("%s/*.layout.tmpl", tmplPath))
 			if err != nil {
 				return myCache, err
 			}
