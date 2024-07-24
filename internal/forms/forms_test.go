@@ -57,9 +57,14 @@ func TestForm_MinLength(t *testing.T) {
 
 	form := New(req.PostForm)
 	minLength := 2
-	form.MinLength("test", minLength)
+	form.MinLength("wrong", minLength)
 	if form.Valid() {
-		t.Errorf("Form shows min length of %d for non-existing field", minLength)
+		t.Errorf("Form shows min length of %d for non-existing field.", minLength)
+	}
+
+	isErr := form.Errors.Get("wrong")
+	if isErr == "" {
+		t.Error("Form should have an error but did not.")
 	}
 
 	postedData := url.Values{}
@@ -70,7 +75,10 @@ func TestForm_MinLength(t *testing.T) {
 		t.Errorf("Field %v length is %d as requested but validation failed.", postedData["test"], minLength)
 	}
 
-	minLength = 5
+	isErr = form.Errors.Get("test")
+	if isErr != "" {
+		t.Error("Form should not have an error but it did.")
+	}
 
 }
 

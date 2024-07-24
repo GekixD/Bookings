@@ -15,7 +15,7 @@ import (
 	"github.com/alexedwards/scs/v2"
 )
 
-const PORT = ":8080"
+const PORT = " :8080"
 
 var app config.AppConfig
 var session *scs.SessionManager
@@ -32,7 +32,7 @@ func main() {
 		Handler: routes(&app),
 	}
 
-	fmt.Println("Starting web application on port: ", PORT)
+	fmt.Printf("Starting web application on port%s", PORT)
 
 	err = srv.ListenAndServe()
 	log.Fatal("Fatal Server Error: ", err)
