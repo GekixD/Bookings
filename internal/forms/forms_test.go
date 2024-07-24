@@ -7,6 +7,19 @@ import (
 	"testing"
 )
 
+func TestErrors_Get(t *testing.T) {
+	e := errors{}
+	e.Add("test", "error")
+
+	if e.Get("x") != "" {
+		t.Error("Shows error in non existent field.")
+	}
+
+	if e.Get("test") == "" {
+		t.Error("Shows no error where there should be.")
+	}
+}
+
 func TestNew(t *testing.T) {
 	req := httptest.NewRequest("POST", "/some-url", nil)
 	postedData := url.Values{}
@@ -29,11 +42,10 @@ func TestForm_Valid(t *testing.T) {
 }
 
 func TestForm_IsEmail(t *testing.T) {
-	req := httptest.NewRequest("POST", "/some-url", nil)
 	postedData := url.Values{}
 	postedData.Add("test", "val")
 
-	form := New(req.PostForm)
+	form := New(postedData)
 	form.IsEmail("test")
 	if form.Valid() {
 		t.Errorf("Value %s is not an email but recognized as such", form.Values["test"])
@@ -42,21 +54,24 @@ func TestForm_IsEmail(t *testing.T) {
 
 func TestForm_MinLength(t *testing.T) {
 	req := httptest.NewRequest("POST", "/some-url", nil)
-	postedData := url.Values{}
-	postedData.Add("test", "val")
 
 	form := New(req.PostForm)
 	minLength := 2
-	form.MinLength("test", minLength, req)
+	form.MinLength("test", minLength)
+	if form.Valid() {
+		t.Errorf("Form shows min length of %d for non-existing field", minLength)
+	}
+
+	postedData := url.Values{}
+	postedData.Add("test", "val")
+	form = New(postedData)
+	form.MinLength("test", minLength)
 	if !form.Valid() {
 		t.Errorf("Field %v length is %d as requested but validation failed.", postedData["test"], minLength)
 	}
 
 	minLength = 5
-	form.MinLength("test", minLength, req)
-	if form.Errors.Get("test") != "" {
-		t.Errorf("Field %v length is less than %d as requested but validation succedded.", form.Get("test"), minLength)
-	}
+
 }
 
 func TestForm_Required(t *testing.T) {
@@ -86,14 +101,14 @@ func TestForm_Has(t *testing.T) {
 	req := httptest.NewRequest("POST", "/some-url", nil)
 	form := New(req.PostForm)
 
-	if form.Has("invalid", req) {
+	if form.Has("invalid") {
 		t.Error("Form has a field while it's supposed not to have.")
 	}
 
 	postedData := url.Values{}
 	postedData.Add("valid", "value")
 	form = New(postedData)
-	if !form.Has("valid", req) {
+	if !form.Has("valid") {
 		t.Error("Form doesn't have a field it's supposed to have.")
 	}
 }

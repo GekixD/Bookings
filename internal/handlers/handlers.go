@@ -83,9 +83,9 @@ func (r *Repository) PostReservation(res http.ResponseWriter, req *http.Request)
 	form := forms.New(req.PostForm)
 	// Form validation logic, the order the messages will be displayed is the order the errors appears (due to the forms.Get function)
 	form.Required("first_name", "last_name", "email", "phone")
-	form.MinLength("first_name", 3, req) // The first name needs to be at least 3 characters long
-	form.MinLength("last_name", 3, req)  // The last name needs to be at least 3 characters long
-	form.MinLength("phone", 10, req)     // The phone number needs to be at least 3 characters long
+	form.MinLength("first_name", 3) // The first name needs to be at least 3 characters long
+	form.MinLength("last_name", 3)  // The last name needs to be at least 3 characters long
+	form.MinLength("phone", 10)     // The phone number needs to be at least 3 characters long
 	form.IsEmail("email")
 	// If you find any validation errors
 	if !form.Valid() {
