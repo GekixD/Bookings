@@ -15,7 +15,7 @@ import (
 	"github.com/alexedwards/scs/v2"
 )
 
-const PORT = " :8080"
+const PORT = ":8080"
 
 var app config.AppConfig
 var session *scs.SessionManager
@@ -32,10 +32,12 @@ func main() {
 		Handler: routes(&app),
 	}
 
-	fmt.Printf("Starting web application on port%s", PORT)
+	fmt.Printf("Starting web application on port %s \n", PORT)
 
 	err = srv.ListenAndServe()
-	log.Fatal("Fatal Server Error: ", err)
+	if err != nil {
+		log.Fatal("Fatal Server Error: ", err)
+	}
 }
 
 // run allows all app related logic to be outside the mail function
