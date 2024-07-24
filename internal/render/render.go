@@ -44,12 +44,16 @@ func RenderTemplate(res http.ResponseWriter, req *http.Request, tmpl string, tmp
 		templCache = app.TemplateCache
 	} else {
 		// else rebuild it from the start
-		templCache, _ = CreateTemplateCache()
+		tc, err := CreateTemplateCache()
+		if err != nil {
+			log.Println("Error creating the template cache:", err)
+		}
+		templCache = tc
 	}
 	// get requested template from cahce
 	t, ok := templCache[tmpl]
 	if !ok {
-		return errors.New("Can not get template from cache")
+		return errors.New("can not get template from cache")
 	}
 
 	// we can create a buffer for a finer grain error checking (will be touched on later)
