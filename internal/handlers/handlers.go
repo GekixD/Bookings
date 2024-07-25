@@ -3,11 +3,11 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/GekixD/Bookings/internal/config"
 	"github.com/GekixD/Bookings/internal/forms"
+	"github.com/GekixD/Bookings/internal/helpers"
 	"github.com/GekixD/Bookings/internal/models"
 	"github.com/GekixD/Bookings/internal/render"
 )
@@ -32,27 +32,17 @@ func NewHandlers(r *Repository) {
 }
 
 func (r *Repository) Home(res http.ResponseWriter, req *http.Request) {
-	remoteIP := req.RemoteAddr
-	r.App.Session.Put(req.Context(), "remote_ip", remoteIP)
-
-	render.RenderTemplate(res, req, "home.page.tmpl", &models.TemplateData{})
+	err := render.RenderTemplate(res, req, "home.page.tmpl", &models.TemplateData{})
+	if err != nil {
+		helpers.ServerError(res, err)
+	}
 }
 
 func (r *Repository) About(res http.ResponseWriter, req *http.Request) {
-
-	stringMap := make(map[string]string)
-	stringMap["test"] = "OK"
-
-	remoteIP := r.App.Session.GetString(req.Context(), "remote_ip")
-
-	stringMap["remote_ip"] = remoteIP
-
-	// Template Data to be passed on to RenderTemplate()
-	tmplData := &models.TemplateData{
-		StringMap: stringMap,
+	err := render.RenderTemplate(res, req, "about.page.tmpl", &models.TemplateData{})
+	if err != nil {
+		helpers.ServerError(res, err)
 	}
-
-	render.RenderTemplate(res, req, "about.page.tmpl", tmplData)
 }
 
 // Reservation renders the make a reservation page and displays form
@@ -60,16 +50,19 @@ func (r *Repository) Reservation(res http.ResponseWriter, req *http.Request) {
 	var emptyReservation models.Reservation
 	data := make(map[string]interface{})
 	data["reservation"] = emptyReservation
-	render.RenderTemplate(res, req, "make-reservations.page.tmpl", &models.TemplateData{
+	err := render.RenderTemplate(res, req, "make-reservations.page.tmpl", &models.TemplateData{
 		Form: forms.New(nil),
 	})
+	if err != nil {
+		helpers.ServerError(res, err)
+	}
 }
 
 // PostReservation handles the posting of a reservation form
 func (r *Repository) PostReservation(res http.ResponseWriter, req *http.Request) {
 	err := req.ParseForm()
 	if err != nil {
-		log.Println("Error parsing the Form data: ", err)
+		helpers.ServerError(res, err)
 		return
 	}
 
@@ -105,17 +98,26 @@ func (r *Repository) PostReservation(res http.ResponseWriter, req *http.Request)
 
 // Generals renders the General's room page
 func (r *Repository) Generals(res http.ResponseWriter, req *http.Request) {
-	render.RenderTemplate(res, req, "generals.page.tmpl", &models.TemplateData{})
+	err := render.RenderTemplate(res, req, "generals.page.tmpl", &models.TemplateData{})
+	if err != nil {
+		helpers.ServerError(res, err)
+	}
 }
 
 // Majors renders the Majors's room page
 func (r *Repository) Majors(res http.ResponseWriter, req *http.Request) {
-	render.RenderTemplate(res, req, "majors.page.tmpl", &models.TemplateData{})
+	err := render.RenderTemplate(res, req, "majors.page.tmpl", &models.TemplateData{})
+	if err != nil {
+		helpers.ServerError(res, err)
+	}
 }
 
 // Availability renders the Majors's room page
 func (r *Repository) Availability(res http.ResponseWriter, req *http.Request) {
-	render.RenderTemplate(res, req, "search-availability.page.tmpl", &models.TemplateData{})
+	err := render.RenderTemplate(res, req, "search-availability.page.tmpl", &models.TemplateData{})
+	if err != nil {
+		helpers.ServerError(res, err)
+	}
 }
 
 // PostAvailability renders the Majors's room page
@@ -128,7 +130,10 @@ func (r *Repository) PostAvailability(res http.ResponseWriter, req *http.Request
 
 // Contact renders the page that contains contact info
 func (r *Repository) Contact(res http.ResponseWriter, req *http.Request) {
-	render.RenderTemplate(res, req, "contact.page.tmpl", &models.TemplateData{})
+	err := render.RenderTemplate(res, req, "contact.page.tmpl", &models.TemplateData{})
+	if err != nil {
+		helpers.ServerError(res, err)
+	}
 }
 
 type jsonResponse struct {
@@ -145,7 +150,8 @@ func (r *Repository) AvailabilityJSON(res http.ResponseWriter, req *http.Request
 
 	out, err := json.MarshalIndent(response, "", "    ")
 	if err != nil {
-		log.Println("JSON parsing error: ", err)
+		helpers.ServerError(res, err)
+		return
 	}
 
 	// standard Content-Type Header is "text/html" so we need to define it to be JSON
@@ -158,7 +164,7 @@ func (r *Repository) ReservationSummary(res http.ResponseWriter, req *http.Reque
 	reservation, ok := r.App.Session.Get(req.Context(), "reservation").(models.Reservation)
 	if !ok {
 		// In case the user tried to access this page without submitting a form
-		log.Println("Can not get item from session")
+		r.App.ErrorLog.Println("Can not get item from session")
 		r.App.Session.Put(req.Context(), "error", "Can't get reservation from current session")
 		http.Redirect(res, req, "/", http.StatusTemporaryRedirect)
 		return
@@ -169,7 +175,10 @@ func (r *Repository) ReservationSummary(res http.ResponseWriter, req *http.Reque
 	data := make(map[string]interface{})
 	data["reservation"] = reservation
 
-	render.RenderTemplate(res, req, "reservation-summary.page.tmpl", &models.TemplateData{
+	err := render.RenderTemplate(res, req, "reservation-summary.page.tmpl", &models.TemplateData{
 		Data: data,
 	})
+	if err != nil {
+		helpers.ServerError(res, err)
+	}
 }

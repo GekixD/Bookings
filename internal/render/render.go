@@ -17,7 +17,7 @@ import (
 // METHOD 3 - AUTOMATIC CACHE
 
 var app *config.AppConfig
-var tmplPath = "./tempates"        // the path to the template files
+var tmplPath = "./templates"       // the path to the template files
 var functions = template.FuncMap{} // a map of functions that will render with the templates
 
 // NewTemplates sets the config for the template package

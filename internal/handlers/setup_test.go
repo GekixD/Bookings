@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"time"
 
@@ -26,6 +27,12 @@ func getRoutes() http.Handler {
 	// What we want our session to contain:
 	gob.Register(models.Reservation{}) //What do I want to store in the session
 	app.Prod = false                   // whether the web app is in producton or development
+
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	app.InfoLog = infoLog
+
+	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app.ErrorLog = errorLog
 
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour              // set the lifetime for the session to 24 hours

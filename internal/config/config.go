@@ -11,7 +11,8 @@ import (
 type AppConfig struct {
 	UseCache      bool                          // This allows you to toggle the cached version of the app, used from memory
 	TemplateCache map[string]*template.Template // This stores the cached templates
-	InfoLog       *log.Logger                   // This is a logger
+	InfoLog       *log.Logger                   // This is an information logger
+	ErrorLog      *log.Logger                   // This is an error logger
 	Prod          bool                          // This signifies if the web app is in a production environment or not
 	Session       *scs.SessionManager           // This manages the current session
 }
